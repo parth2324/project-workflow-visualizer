@@ -1,0 +1,121 @@
+        Scanner sc = new Scanner(new File("Parser.java"));
+        sc.useDelimiter("\\Z");
+        String comments = "\\Q*/\\E|\\Q/*\\E|//" + "(\"(.*?)\")|(\'(.*?)\')" + "[{};]";
+        int i = 0;
+        while(sc.hasNext()){
+            System.out.println(i++ + " <" + sc.next().trim() + ">");
+        }
+
+        String regex1 = "\\G;"; 
+        Pattern pattern1 = Pattern.compile(regex1, Pattern.CASE_INSENSITIVE); 
+        Matcher matcher1 = pattern1.matcher("String x = \"abc ; cdf\"; int x = 1;");
+        while (matcher1.find()) 
+        { 
+            System.out.println("Start index: " + matcher1.start()); 
+            System.out.println("End index: " + matcher1.end()); 
+        } 
+
+
+________________________________________________________________________________________________________________
+
+
+
+    private static String[] loop_keywords = {"do", "while", "for"},
+                            cond_keywords = {"if", "else", "switch", "case"},
+                            err_keywords = {"try", "catch", "finally"},
+                            ctrl_keywords = {"return", "continue", "break", "assert", "throw"},
+                            struc_keywords = {"class", "enum"};
+
+    public CodePiece parse(){
+        if(this.getRawCode().trim().length() == 0) return null;
+        CodePiece cp = new CodePiece();  // write the recursive parse loop !
+        return cp;
+    }
+
+    public KEYWORD_TYPE getKeywordType(String word){
+        /*
+         * returns KEYWORD_TYPE
+         * PRE: query 'word' is clean
+         */
+        for(String i : loop_keywords){
+            if(i.equals(word)) return KEYWORD_TYPE.LOOP;
+        }
+        for(String i : cond_keywords){
+            if(i.equals(word)) return KEYWORD_TYPE.CONDITIONAL;
+        }
+        for(String i : ctrl_keywords){
+            if(i.equals(word)) return KEYWORD_TYPE.CONTROL;
+        }
+        for(String i : struc_keywords){
+            if(i.equals(word)) return KEYWORD_TYPE.STRUCTURE;
+        }
+        for(String i : err_keywords){
+            if(i.equals(word)) return KEYWORD_TYPE.ERROR;
+        }
+        return KEYWORD_TYPE.STATEMENT;
+    }
+
+
+
+                                ||||||||||
+                                ||||||||||
+                                VVVVVVVVVV
+
+
+    
+    private static String[] loop_keywords = {<str0>, <str1>, <str2>},
+                            cond_keywords = {<str3>, <str4>, <str5>, <str6>},
+                            err_keywords = {<str7>, <str8>, <str9>},
+                            ctrl_keywords = {<str10>, <str11>, <str12>, <str13>, <str14>},
+                            struc_keywords = {<str15>, <str16>};
+
+    public CodePiece parse(){
+        if(this.getRawCode().trim().length() == 0) return null;
+        CodePiece cp = new CodePiece();  <doc0>
+        return cp;
+    }
+
+    public KEYWORD_TYPE getKeywordType(String word){
+        <doc1>
+        for(String i : loop_keywords){
+            if(i.equals(word)) return KEYWORD_TYPE.LOOP;
+        }
+        for(String i : cond_keywords){
+            if(i.equals(word)) return KEYWORD_TYPE.CONDITIONAL;
+        }
+        for(String i : ctrl_keywords){
+            if(i.equals(word)) return KEYWORD_TYPE.CONTROL;
+        }
+        for(String i : struc_keywords){
+            if(i.equals(word)) return KEYWORD_TYPE.STRUCTURE;
+        }
+        for(String i : err_keywords){
+            if(i.equals(word)) return KEYWORD_TYPE.ERROR;
+        }
+        return KEYWORD_TYPE.STATEMENT;
+    }
+
+
+_________________________________________________________________________________________________________________
+ 0123456789
+"abcd //hi "
+"abcd <doc404>" 
+-5 + 8 = 3 
+
+        int r = new JavaParser().getRawCodeType("");
+        if((r & Meta.CONDITIONAL) > 0)System.out.println("Has a Conditional keyword");
+        if((r & Meta.LOOP) > 0)System.out.println("Has a Loop keyword");
+        if((r & Meta.CONTROL) > 0)System.out.println("Has a Control keyword");
+        if((r & Meta.STRUCTURE) > 0)System.out.println("Has a Structure keyword");
+        if((r & Meta.STATEMENT) > 0)System.out.println("Has a Statement keyword");
+        if((r & Meta.ERROR) > 0)System.out.println("Has a Error keyword");
+
+
+
+        for(String word : clean.first.split("[{};]")){
+            System.out.println("|"+word.trim()+"|");
+        }
+
+ 01234567
+"abc{fg}"
+"abc"

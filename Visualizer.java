@@ -1,10 +1,13 @@
-import java.io.File;
+import business.Presenter;
+import interfaces.UI;
+import interfaces.UIs.CLI;
 
 public class Visualizer {
     public static void main(String[] args) throws Exception{
-        CLIPresenter cliP = new CLIPresenter();
-        cliP.init(new File("C:\\Users\\parth\\OneDrive\\Desktop\\code\\Java\\Project Workflow Visualizer\\Meta.java"), false, new JavaParser());
-        cliP.printData();
-        cliP.start_visualisation();
+        UI ui = new CLI();
+        Presenter p = new Presenter(ui);
+        p.init(null, "java");
+        ui.setPresenter(p);
+        ui.run();
     }
 }
