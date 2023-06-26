@@ -5,28 +5,35 @@ import java.util.ArrayList;
 
 public class TargetFileSystem {
     private TargetFileSystem[] subsystems;
+    private TargetFileSystem parent;
     private Parser ps;
     private File init_path_file;
 
     public TargetFileSystem(Parser ps){
         this.subsystems = null;
+        this.parent = null;
         this.init_path_file = null;
         this.ps = ps;
     }
 
     public void init(File path_file){
+        this.init(path_file, null);
+    }
+
+    private void init(File path_file, TargetFileSystem parent){
         if(path_file.isDirectory()){
             TargetFileSystem new_child;
             ArrayList<TargetFileSystem> children = new ArrayList<TargetFileSystem>();
             for(File child_file : path_file.listFiles()){
                 new_child = new TargetFileSystem(this.ps);
-                new_child.init(child_file);
+                new_child.init(child_file, this);
                 if(new_child.hasTargets()){
                     children.add(new_child);
                 }
             }
             if(children.size() > 0){
                 this.init_path_file = path_file;
+                this.parent = parent;
                 this.subsystems = new TargetFileSystem[children.size()];
                 for(int i = 0; i < children.size(); i++){
                     subsystems[i] = children.get(i);
@@ -35,6 +42,7 @@ public class TargetFileSystem {
         }
         else if(path_file.getAbsolutePath().endsWith(this.ps.getParseExtension())){
             this.init_path_file = path_file;
+            this.parent = parent;
         }
     }
 
@@ -50,6 +58,10 @@ public class TargetFileSystem {
         return this.init_path_file != null && this.subsystems != null;
     }
 
+    public boolean hasParent(){
+        return this.parent != null;
+    }
+
     public File getFile(){
         if(this.isSingleFile()) return this.init_path_file;
         return null;
@@ -58,6 +70,10 @@ public class TargetFileSystem {
     public TargetFileSystem[] getSubSystems(){
         if(this.hasSubSystems()) return this.subsystems;
         return null;
+    }
+
+    public TargetFileSystem getParent(){
+        return this.parent;
     }
 
     public String toString(){

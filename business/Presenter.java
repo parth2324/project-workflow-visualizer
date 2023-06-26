@@ -1,7 +1,6 @@
 package business;
 
 import java.io.File;
-import java.util.Stack;
 
 import javax.swing.JFileChooser;
 
@@ -59,14 +58,14 @@ public class Presenter{
 
     public void selectActiveFile(){
         this.ui.showMessage("Select file:\n", Message.INFORMATION_MESSAGE);
-        Stack<TargetFileSystem> fsys = new Stack<TargetFileSystem>();
-        fsys.push(tfs);
+
+        TargetFileSystem curr = this.tfs;
         int option = -1;
-        while(fsys.peek().hasSubSystems()){
-            this.ui.showMessage(fsys.peek().navigationToString(), Message.INFORMATION_MESSAGE);
+        while(curr.hasSubSystems()){
+            this.ui.showMessage(curr.navigationToString(), Message.INFORMATION_MESSAGE);
             try{
                 option = Integer.parseInt(this.ui.requestInput());
-                if(option <= 0 || option >= (fsys.peek().getSubSystems().length + 2)){
+                if(option <= 0 || option >= (curr.getSubSystems().length + 2)){
                     throw new NumberFormatException();
                 }
             }
@@ -75,18 +74,18 @@ public class Presenter{
                 continue;
             }
             if(option == 1){
-                if(fsys.size() == 1){
+                if(!curr.hasParent()){
                     this.ui.showMessage("parent not found", Message.ERROR_MESSAGE);
                 }
-                else fsys.pop();
+                else curr = curr.getParent();
             }
             else{
-                fsys.push((fsys.peek().getSubSystems())[option - 2]);
+                curr = (curr.getSubSystems())[option - 2];
             }
         }
-        if(fsys.peek().isSingleFile()){
-            this.ac = new ActiveClass(fsys.peek().getFile().getAbsolutePath(), this.ps);
-            this.ui.showMessage(fsys.peek().getFile().getName() + " selected", Message.INFORMATION_MESSAGE);
+        if(curr.isSingleFile()){
+            this.ac = new ActiveClass(curr.getFile().getAbsolutePath(), this.ps);
+            this.ui.showMessage(curr.getFile().getName() + " selected", Message.INFORMATION_MESSAGE);
         }
         else this.ac = null;
     }
