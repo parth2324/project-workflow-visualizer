@@ -3,33 +3,36 @@ package entities;
 import java.util.*;
 
 public class TargetClasses {
+    /*
+     * data format <target class, link to file in tfs>
+     */
+    private ArrayList<Pair<String, TargetFileSystem>> data;
     private String[] classes;
     private Parser ps;
 
     public TargetClasses(Parser ps){
+        this.data = null;
         this.classes = null;
         this.ps = ps;
     }
 
     public void init(TargetFileSystem root){
-        ArrayList<String> classes = new ArrayList<String>();
-        this.rec_init(root, classes);
-        if(classes.size() > 0){
-            this.classes = new String[classes.size()];
-            for(int i = 0; i < classes.size(); i++){
-                this.classes[i] = classes.get(i);
-            }
+        this.data = new ArrayList<Pair<String, TargetFileSystem>>();
+        this.rec_init(root);
+        this.classes = new String[this.data.size()];
+        for(int i = 0; i < classes.length; i++){
+            classes[i] = this.data.get(i).first;
         }
     }
 
-    private void rec_init(TargetFileSystem src, List<String> classes){
+    private void rec_init(TargetFileSystem src){
         if(src.isSingleFile()){
             this.ps.load(src.getFile());
-            this.ps.addClasses(classes);
+            this.ps.addClasses(src, this.data);
         }
         else if(src.hasSubSystems()){
             for(TargetFileSystem tfs : src.getSubSystems()){
-                rec_init(tfs, classes);
+                rec_init(tfs);
             }
         }
     }

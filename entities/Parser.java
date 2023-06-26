@@ -72,7 +72,7 @@ public abstract class Parser{
     /*
      * always load parser with data, then search for classes in data. 
      */
-    public abstract void addClasses(List<String> classes);
+    public abstract void addClasses(TargetFileSystem tfs_link, List<Pair<String, TargetFileSystem>> data);
     
     public abstract Pattern getClassPattern();
     public abstract Pattern getPackagePattern();

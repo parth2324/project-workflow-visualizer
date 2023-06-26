@@ -26,7 +26,7 @@ public class JavaParser extends Parser{
         return Pattern.compile("([^a-zA-Z0-9.]|^)package[\s\t\n]([^;]*)");
     }
 
-    public void addClasses(List<String> classes){
+    public void addClasses(TargetFileSystem tfs_link, List<Pair<String, TargetFileSystem>> data){
         if(this.isLoadedClean()){
             String package_name = "";
             Matcher matcher = this.getPackagePattern().matcher(this.cleaned_code.first);
@@ -35,7 +35,7 @@ public class JavaParser extends Parser{
             }
             matcher = this.getClassPattern().matcher(this.cleaned_code.first);
             while(matcher.find()){
-                classes.add(package_name + matcher.group(3).trim().replaceAll("extends", Parser.EXTENDS_REP).replaceAll("implements", Parser.IMPLEMENTS_REP));
+                data.add(new Pair<String,TargetFileSystem>(package_name + matcher.group(3).trim().replaceAll("extends", Parser.EXTENDS_REP).replaceAll("implements", Parser.IMPLEMENTS_REP), tfs_link));
             }
         }
     }
