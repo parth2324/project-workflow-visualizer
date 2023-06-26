@@ -19,28 +19,28 @@ public class JavaParser extends Parser{
     }
 
     public Pattern getClassPattern(){
-        return Pattern.compile("[^a-zA-Z0-9.]?(class|interface)[\s\t\n](.*)\\{");
+        return Pattern.compile("([^a-zA-Z0-9.]|^)(class|interface)[\s\t\n]([^{]*)");
     }
 
     public Pattern getPackagePattern(){
-        return Pattern.compile("[^a-zA-Z0-9.]?package[\s\t\n](.*);");
+        return Pattern.compile("([^a-zA-Z0-9.]|^)package[\s\t\n]([^;]*)");
     }
 
     public void addClasses(List<String> classes){
-        if(this.isLoaded()){
+        if(this.isLoadedClean()){
             String package_name = "";
-            Matcher matcher = this.getPackagePattern().matcher(this.raw_code);
+            Matcher matcher = this.getPackagePattern().matcher(this.cleaned_code.first);
             if(matcher.find()){
-                package_name = matcher.group(1).trim() + Parser.PACKAGE_CON;
+                package_name = matcher.group(2).trim() + Parser.PACKAGE_CON;
             }
-            matcher = this.getClassPattern().matcher(this.raw_code);
+            matcher = this.getClassPattern().matcher(this.cleaned_code.first);
             while(matcher.find()){
-                classes.add(package_name + matcher.group(2).trim().replaceAll("extends", Parser.EXTENDS_REP).replaceAll("implements", Parser.IMPLEMENTS_REP));
+                classes.add(package_name + matcher.group(3).trim().replaceAll("extends", Parser.EXTENDS_REP).replaceAll("implements", Parser.IMPLEMENTS_REP));
             }
         }
     }
 
-    private Pair<String, Pair<String[], String[]>> clean(){
+    public Pair<String, Pair<String[], String[]>> clean(){
         if(!this.isLoaded()) return null;
         String cleaned = this.raw_code;
         int from = -1, delta_str = this.str_heap_head.length() + this.str_heap_tail.length(), delta_doc = this.doc_heap_head.length() + this.doc_heap_tail.length();
@@ -92,9 +92,8 @@ public class JavaParser extends Parser{
     }
 
     public Pair<String[], Pair<String[], String[]>> parse(){
-        Pair<String, Pair<String[], String[]>> clean = this.clean();
-        if(clean == null) return null;
-        return new Pair<String[], Pair<String[], String[]>>(this.segmentize(clean.first), clean.second);
+        if(!this.isLoadedClean()) return null;
+        return new Pair<String[], Pair<String[], String[]>>(this.segmentize(this.cleaned_code.first), this.cleaned_code.second);
     }
 
     private String[] segmentize(String code){

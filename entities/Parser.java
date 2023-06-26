@@ -10,9 +10,11 @@ public abstract class Parser{
     protected String str_heap_head, str_heap_tail, doc_heap_head, doc_heap_tail;
     protected String raw_code, type, extension;
     protected String[][] keywords;
+    protected Pair<String, Pair<String[], String[]>> cleaned_code;
 
     public Parser(String type, String extension, String str_heap_head, String str_heap_tail, String doc_heap_head, String doc_heap_tail, String[][] keywords){
         this.raw_code = "";
+        this.cleaned_code = null;
         this.type = type;
         this.extension = extension;
         this.str_heap_head = str_heap_head;
@@ -28,9 +30,11 @@ public abstract class Parser{
             sc.useDelimiter("\\Z");
             this.raw_code = sc.next().trim();
             sc.close();
+            this.cleaned_code = this.clean();
             return true;
         }catch(Exception e){
             this.raw_code = "";
+            this.cleaned_code = null;
             return false;
         }
     }
@@ -50,6 +54,15 @@ public abstract class Parser{
     public boolean isLoaded(){
         return this.raw_code != "";
     }
+
+    public boolean isLoadedClean(){
+        return this.cleaned_code != null;
+    }
+
+    /*
+     * returns pair(raw code, pair(strings heap, documentation heap)).
+     */
+    public abstract Pair<String, Pair<String[], String[]>> clean();
 
     /*
      * returns pair(segmented raw code, pair(strings heap, documentation heap)).
