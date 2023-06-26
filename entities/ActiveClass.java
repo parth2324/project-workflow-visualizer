@@ -2,7 +2,6 @@ package entities;
 
 public class ActiveClass {
     public ActiveClass(String path, Parser ps){
-        // tcs should have tfs link
         // update parser for function parsing too
     }
 }
