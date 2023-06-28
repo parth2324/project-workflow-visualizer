@@ -18,6 +18,10 @@ public class JavaParser extends Parser{
         super(JavaParser.TYPE, JavaParser.EXTENSION, "<str", ">", "<doc", ">", keywords);
     }
 
+    public Pattern getFunctionPattern(){
+        return Pattern.compile("(\s|^)[a-zA-Z0-9_]*\\([^)]*\\)(\s|^)*\\{");
+    }
+
     public Pattern getClassPattern(){
         return Pattern.compile("([^a-zA-Z0-9.]|^)(class|interface)[\s\t\n]([^{]*)");
     }
@@ -91,7 +95,7 @@ public class JavaParser extends Parser{
         return new Pair<String, Pair<String[], String[]>>(cleaned, new Pair<String[], String[]>(str_heap_, doc_heap_));
     }
 
-    public Pair<String[], Pair<String[], String[]>> parse(){
+    public Pair<String[], Pair<String[], String[]>> parse(){  // update for function extraction
         if(!this.isLoadedClean()) return null;
         return new Pair<String[], Pair<String[], String[]>>(this.segmentize(this.cleaned_code.first), this.cleaned_code.second);
     }

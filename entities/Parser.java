@@ -66,6 +66,8 @@ public abstract class Parser{
 
     /*
      * returns pair(segmented raw code, pair(strings heap, documentation heap)).
+     * 
+     * segemented implies functions extracted and class information
      */
     public abstract Pair<String[], Pair<String[], String[]>> parse();
     
@@ -74,6 +76,7 @@ public abstract class Parser{
      */
     public abstract void addClasses(TargetFileSystem tfs_link, List<Pair<String, TargetFileSystem>> data);
     
+    public abstract Pattern getFunctionPattern();
     public abstract Pattern getClassPattern();
     public abstract Pattern getPackagePattern();
 }
